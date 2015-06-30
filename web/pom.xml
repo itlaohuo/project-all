@@ -121,6 +121,8 @@
                             <directory>src/main/webapp</directory>
                             <includes>
                                 <include>**/web.xml</include>
+                                <include>**/index.jsp</include>
+
                                 <!--在maven打包时替换掉 web.xml中的变量-->
                             </includes>
                         </resource>
