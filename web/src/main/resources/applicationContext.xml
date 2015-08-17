@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/mvc"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 
     <context:property-placeholder location="classpath:app.properties"/>
+
+    <context:component-scan base-package="com.he0303.test" use-default-filters="true">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
     <!-- sessionFactory -->
     <bean id="sessionFactory"
@@ -13,7 +22,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan">
             <!-- hibernate扫描实体 -->
-            <value>com.xxx.yyy</value>
+            <value>com.he0303.test</value>
         </property>
         <property name="hibernateProperties">
             <props>
@@ -38,11 +47,16 @@
                 <prop key="hibernate.dialect">
                    ${hibernate.dialect}
                 </prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
             </props>
         </property>
     </bean>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <tx:annotation-driven  transaction-manager="transactionManager" proxy-target-class="true" />
+
 
     <beans profile="dev,test">
         <!-- 数据源 -->
@@ -50,16 +64,16 @@
               class="com.mchange.v2.c3p0.ComboPooledDataSource"
               destroy-method="close">
             <property name="driverClass">
-                <value>oracle.jdbc.driver.OracleDriver</value>
+                <value>${driverClass}</value>
             </property>
             <property name="jdbcUrl">
-                <value>jdbc:oracle:thin:@114.112.230.92:1521:orcl</value>
+                <value>${jdbcUrl}</value>
             </property>
             <property name="user">
-                <value>cas</value>
+                <value>${user}</value>
             </property>
             <property name="password">
-                <value>huilong432</value>
+                <value>${password}</value>
             </property>
 
             <!--连接池中保留的最小连接数。-->
@@ -125,9 +139,6 @@
     <beans profile="prod">
         <jee:jndi-lookup jndi-name="${jndiName}" id="dataSource"></jee:jndi-lookup>
     </beans>
-
-
-
 
 
 
