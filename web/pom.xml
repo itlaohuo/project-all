@@ -15,7 +15,7 @@
 
     <!-- 项目属性, 如依赖版本, 一些插件属性配置 -->
     <properties>
-        <org.springframework>4.1.3.RELEASE</org.springframework>
+        <org.springframework>4.2.7.RELEASE</org.springframework>
         <hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
         <hibernate-validator.version>5.1.3.Final</hibernate-validator.version>
     </properties>
